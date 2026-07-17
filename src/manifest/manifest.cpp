@@ -12,6 +12,7 @@ Manifest::Manifest(std::filesystem::path manifest_dir)
     : manifest_dir_(std::move(manifest_dir)) {}
 
 std::string Manifest::generate_backup_id() {
+    static uint64_t counter = 0;
     auto now = std::chrono::system_clock::now();
     auto tt = std::chrono::system_clock::to_time_t(now);
     auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -20,7 +21,8 @@ std::string Manifest::generate_backup_id() {
     std::ostringstream oss;
     oss << "backup_"
         << std::put_time(std::gmtime(&tt), "%Y%m%d_%H%M%S")
-        << "_" << std::setw(3) << std::setfill('0') << ms.count();
+        << "_" << std::setw(3) << std::setfill('0') << ms.count()
+        << "_" << counter++;
     return oss.str();
 }
 
