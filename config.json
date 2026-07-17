@@ -1,0 +1,5 @@
+{
+    "chunk_size": 4194304,
+    "worker_threads": 4,
+    "repository_path": "./repository"
+}

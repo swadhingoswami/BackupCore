@@ -1,0 +1,38 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Compiled libraries
+*.o
+*.obj
+*.lib
+*.dll
+*.dylib
+*.so
+*.a
+
+# Executables
+backupcore
+backupcore.exe
+
+# Test binaries
+*_test
+*_tests
+
+# Benchmark binaries
+*_bench
+
+# Repository data (created at runtime)
+repository/

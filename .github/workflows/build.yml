@@ -1,0 +1,48 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        build_type: [Release, Debug]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libssl-dev cmake
+
+      - name: Install Dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install openssl cmake googletest
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ./build/tests/test_backupcore
+
+      - name: Quick Integration Test
+        run: |
+          mkdir -p /tmp/ci_backup_source /tmp/ci_backup_restore
+          echo "CI test file" > /tmp/ci_backup_source/hello.txt
+          ./build/src/backupcore backup /tmp/ci_backup_source
+          BACKUP_ID=$(./build/src/backupcore list | grep backup_ | awk '{print $1}')
+          ./build/src/backupcore restore "$BACKUP_ID" /tmp/ci_backup_restore
+          diff /tmp/ci_backup_source/hello.txt /tmp/ci_backup_restore/hello.txt
