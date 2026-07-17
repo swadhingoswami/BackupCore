@@ -35,4 +35,4 @@ backupcore.exe
 *_bench
 
 # Repository data (created at runtime)
-repository/
+/repository/
